@@ -8,8 +8,7 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).send({ message: 'Unauthorizedddddd' })
   }
   
-  try {
-    
+  try {    
     console.log('1 token: ' + token)
     console.log('1 decoded: ' + jwt.verify(token, process.env.SECRET_KEY))
     console.log('1 secret: ' + process.env.SECRET_KEY)
