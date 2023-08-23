@@ -1,11 +1,18 @@
-const connection = require("../configs/mongodb.connection")
-const bcrypt = require("bcrypt")
+const connection = require("../configs/mongodb.connection");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user.model")
+const User = require("../models/user.model");
+const express = require("express");
+const app = express();
+const router = express.Router();
+const cors = require("cors");
 require('dotenv').config();
 
-const login = async (req, res) => {
+app.use(cors());
+
+const login = router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log("email: " + email + ', password: ' + password)
 
   try {
     const user = await User.findOne({ email });
@@ -27,7 +34,7 @@ const login = async (req, res) => {
     console.error(error);
     res.status(500).send({ message: "Error logging in" });
   }
-};
+});
 
 const register = async (req, res) => {
   const { email, password, first_name, last_name } = req.body;
