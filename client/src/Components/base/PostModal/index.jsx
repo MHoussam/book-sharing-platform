@@ -9,7 +9,7 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
   const [data, setData] = useState({
     name: "",
     author: "",
-    shortReview: "",
+    review: "",
     image: null,
   });
 
@@ -33,27 +33,30 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("author", data.author);
-    formData.append("shortReview", data.shortReview);
+    formData.append("review", data.review);
     formData.append("image", data.image);
     formData.append("token", token);
     formData.append("user_id", user_id);
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/post", formData);
+      console.log(formData.data)
+      console.log(formData)
+      const response = await axios.post("http://127.0.0.1:8000/books/post", formData);
 
-      // if (response.data.message === "Posted") {
-      //   const updatedBooks = [...books, response.data.data];
-      //   localStorage.setItem("books", JSON.stringify(updatedBooks));
-      //   setBooks(updatedBooks);
-      // } else {
-      //   console.log("Didn't Post");
-      // }
+      if (response.data.message === 'Post created successfully!') {
+        // const updatedBooks = [...books, response.data.data];
+        // localStorage.setItem("books", JSON.stringify(updatedBooks));
+        // setBooks(updatedBooks);
+        console.log('Posted')
+      } else {
+        console.log("Didn't Post");
+      }
     } catch (error) {
       console.log(error);
     }
     
     // Clear form data after posting
-    setData({ name: "", author: "", shortReview: "", image: null });
+    setData({ name: "", author: "", review: "", image: null });
   };
 
   return (
@@ -90,7 +93,7 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
                     <label className="bold">Author</label>
                     <input
                         type="text"
-                        name="cuisine"
+                        name="author"
                         value={data.author}
                         className="cuisine-input"
                         onChange={handleInputChange}
@@ -100,8 +103,8 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
                 <div className="ingredients margin-btm">
                     <label className="bold">Short Review</label>
                     <textarea
-                        name="ingredients"
-                        value={data.shortReview}
+                        name="review"
+                        value={data.review}
                         className="ingredients-input"
                         onChange={handleInputChange}
                         required

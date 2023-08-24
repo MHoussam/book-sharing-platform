@@ -1,9 +1,9 @@
 import axios from "axios";
-import "../../styles/loginForm.css";
-import "../../styles/utilities.css";
+import "../../../styles/loginForm.css";
+import "../../../styles/utilities.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import logoPic from "../../assets/images/logo.png";
+import logoPic from "../../../assets/images/logo.png";
 
 const LoginForm = ({ setUser }) => {
   const [data, setData] = useState({

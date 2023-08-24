@@ -1,32 +1,25 @@
 const mongoose = require('mongoose');
-const multer = require('multer');
-const path = require('path');
 const Post = require('../models/post.model');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/images'); // Define your image upload directory
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
-  },
-});
-
-const upload = multer({ storage });
+const { upload } = require('../middlewares/multer.middleware'); // Import the upload middleware
 
 const createPost = async (req, res) => {
   try {
-    const { user_id, caption } = req.body;
+    const { user_id, name, author, review } = req.body;
     const photo = req.file ? 'images/' + req.file.filename : '';
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    console.log('here: ' + req.file)
+    console.log('name: ' + req.file.filename)
 
     const post = new Post({
       user_id,
-      caption,
+      name,
+      author,
+      review,
       photo,
       uploaded_at: new Date(),
-      likesNb: 0,
     });
 
     const savedPost = await post.save();
@@ -42,7 +35,5 @@ const createPost = async (req, res) => {
 };
 
 module.exports = {
-  mongoDb,
-  upload,
   createPost,
 };

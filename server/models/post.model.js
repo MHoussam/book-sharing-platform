@@ -1,21 +1,14 @@
 const mongoose = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-  content: String,
-})
-
 const postSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+  name: String,
+  review: String,
+  photo: String,
+  user_id: { 
+    type: Number, 
+    ref: "User" 
   },
-  comments: [commentSchema]
+  author: String
 });
 
 const model = mongoose.model("Post", postSchema);
