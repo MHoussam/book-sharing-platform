@@ -1,12 +1,12 @@
 import React from 'react';
 import NavBar from '../../Components/ui/NavBar';
-import Books from '../../Components/ui/Books';
+import BooksList from '../../Components/ui/BooksList';
 
 const Home = () => {
   return (
     <div>
         <NavBar />
-        <Books />
+        <BooksList />
     </div>
   )
 }

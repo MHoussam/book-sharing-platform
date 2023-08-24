@@ -45,7 +45,7 @@ const SearchBar = ({ recipes }) => {
 
   const onClickSearch = (recipeId) => {
     localStorage.setItem('book_id', recipeId);
-      navigate(`../Recipe`);
+      navigate(`../Book`);
   };
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const SearchBar = ({ recipes }) => {
         <div className="search-bar-list width-100 flex column center">
           <ul className="search-list flex column">
             {filteredUsers.map((recipe) => (
-              <li key={recipe.id} onClick={() => onClickSearch(recipe.id)}>
+              <li key={recipe._id} onClick={() => onClickSearch(recipe._id)}>
                 <div className="search-list-li flex pointer">
                   <div className="photo width-20">
                     <Image

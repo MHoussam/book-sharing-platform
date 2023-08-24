@@ -20,8 +20,8 @@ const RecipeCardModal = ({ recipe, likedRecipes = null, shoppingList = null, han
     const button = e.target.tagName === 'BUTTON';
 
     if (!button) {
-      localStorage.setItem('recipe_id', recipe.id);
-      navigate(`../Recipe`);
+      localStorage.setItem('book_id', recipe._id);
+      navigate(`../Book`);
     }
   };
 

@@ -7,7 +7,7 @@ import RecipeCartModal from "../../base/CartRecipeModal";
 import PostModal from "../../base/PostModal";
 import Button from "../../base/Button";
 
-const Books = () => {
+const BooksList = () => {
   const [recipes, setRecipes] = useState([]);
   const [likedRecipes, setLikedRecipes] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
@@ -234,7 +234,7 @@ const Books = () => {
   return (
     <div className="content">
       <div className="search-post flex">
-        <div className="search width-90">
+        <div className="search flex center width-90">
           <SearchBar recipes={recipes} />
         </div>
 
@@ -277,4 +277,4 @@ const Books = () => {
   );
 };
 
-export default Books;
+export default BooksList;
