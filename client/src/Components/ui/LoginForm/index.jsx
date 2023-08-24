@@ -19,7 +19,10 @@ const LoginForm = ({ setUser }) => {
     try {
       const response = await axios.post("http://localhost:8000/auth/login", data);
       console.log(response.data);
-      // localStorage.setItem("id", response.data.data.id);
+      console.log(response.data.user._doc.first_name);
+      console.log(response.data.user._doc.last_name);
+      console.log(response.data.user._doc._id);
+      localStorage.setItem("id", response.data.user._doc._id);
       // localStorage.setItem("first_name", response.data.data.first_name);
       // localStorage.setItem("token", response.data.data.token);
       setData({ email: "", password: "" });

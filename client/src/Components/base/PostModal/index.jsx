@@ -36,7 +36,7 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
     formData.append("review", data.review);
     formData.append("image", data.image);
     formData.append("token", token);
-    formData.append("user_id", user_id);
+    formData.append("userId", localStorage.getItem("id"));
 
     try {
       console.log(formData.data)

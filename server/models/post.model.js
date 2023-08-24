@@ -4,11 +4,12 @@ const postSchema = new mongoose.Schema({
   name: String,
   review: String,
   photo: String,
-  user_id: { 
-    type: Number, 
-    ref: "User" 
-  },
-  author: String
+  author: String,
+  user: { 
+    id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    first_name: { type: mongoose.Schema.Types.String, ref: "User" },
+    last_name: { type: mongoose.Schema.Types.String, ref: "User" },
+  }
 });
 
 const model = mongoose.model("Post", postSchema);

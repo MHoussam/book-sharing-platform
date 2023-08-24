@@ -15,11 +15,11 @@ const Books = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeContent, setRecipeContent] = useState([
     {
-      publisher_id: "",
+      user_id: "",
       name: "",
-      cuisine: "",
-      ingredients: "",
-      image_url: "",
+      author: "",
+      review: "",
+      image: "",
     },
   ]);
   //const [likesColor, setLikesColor] = useState('like-btn pointer bold round');
