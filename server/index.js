@@ -8,6 +8,7 @@ require("dotenv").config()
 const cors = require("cors");
 const mongoDb = require("./configs/mongodb.connection")
 
+app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());
 

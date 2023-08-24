@@ -47,6 +47,12 @@ const createPost = async (req, res) => {
   }
 };
 
+const getPosts = async (req,res) => {
+  const books = await Post.find();
+  res.send(books);
+}
+
 module.exports = {
+  getPosts,
   createPost,
 };

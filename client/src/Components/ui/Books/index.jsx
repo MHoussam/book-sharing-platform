@@ -41,13 +41,14 @@ const Books = () => {
            data
         );
         const allData = response.data;
+        console.log(allData[0]._id)
 
         localStorage.setItem("recipes", JSON.stringify(allData));
         setRecipes(allData);
 
 
         //e.log(allData);
-        //console.log("fetched");
+        console.log("fetched");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -247,13 +248,13 @@ const Books = () => {
       <div className="recipes">
         <div className="recipe-container">
           {recipes.map((recipe) => (
-            <div key={recipe.id}>
+            <div key={recipe._id}>
               <RecipeCard
                 recipe={recipe}
                 likedRecipes={likedRecipes}
                 shoppingList={shoppingList}
-                handleLike={() => handleLike(recipe.id)}
-                handleShoppingList={() => handleShoppingList(recipe.id)}
+                handleLike={() => handleLike(recipe._id)}
+                handleShoppingList={() => handleShoppingList(recipe._id)}
               />
             </div>
           ))}

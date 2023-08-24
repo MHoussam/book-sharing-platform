@@ -42,9 +42,10 @@ const PostModal = ({ isOpen, onClose, recipes, setRecipes }) => {
       console.log(formData.data)
       console.log(formData)
       const response = await axios.post("http://127.0.0.1:8000/books/post", formData);
-
+      console.log(response)
+      console.log(response.data.post._id)
       if (response.data.message === 'Post created successfully!') {
-        const updatedRecipes = [...recipes, response.data.data];
+        const updatedRecipes = [...recipes, response.data.post];
         localStorage.setItem("books", JSON.stringify(updatedRecipes));
         setRecipes(updatedRecipes);
         console.log('Posted')
@@ -57,6 +58,7 @@ const PostModal = ({ isOpen, onClose, recipes, setRecipes }) => {
     
     // Clear form data after posting
     setData({ name: "", author: "", review: "", image: null });
+    onClose();
   };
 
   return (
