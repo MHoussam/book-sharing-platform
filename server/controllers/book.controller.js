@@ -52,7 +52,45 @@ const getPosts = async (req,res) => {
   res.send(books);
 }
 
+const getLikedPosts = async (req,res) => {
+  try {
+    const { userId } = req.body;
+
+    const likedPosts = await Post.find({ 'like.id': userId }, '_id');
+
+    const likedPostIds = likedPosts.map((post) => post._id);
+
+    res.status(200).json({
+      likedPostIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching liked posts' });
+  }
+}
+
+const likePost = async (req, res) => {
+  try {
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId },
+      { $addToSet: { 'like.id': userId } },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    res.status(200).json({ message: 'Post liked successfully', updatedPost });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error liking the post' });
+  }
+}
+
 module.exports = {
+  likePost,
+  getLikedPosts,
   getPosts,
   createPost,
 };
