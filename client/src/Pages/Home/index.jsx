@@ -7,7 +7,6 @@ const Home = () => {
     <div>
         <NavBar />
         <Books />
-        <h1>Welcome Home</h1>
     </div>
   )
 }

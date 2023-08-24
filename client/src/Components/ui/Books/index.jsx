@@ -36,14 +36,14 @@ const Books = () => {
         setRecipes(JSON.parse(check));
         //console.log("hellooooo");
       } else {
-        //// const response = await axios.post(
-        ////   "http://127.0.0.1:8000/api/all",
-        ////   data
-        //// );
-        //// const allData = response.data;
+        const response = await axios.post(
+          "http://127.0.0.1:8000/books/all",
+           data
+        );
+        const allData = response.data;
 
-        // localStorage.setItem("recipes", JSON.stringify(allData));
-        // setRecipes(allData);
+        localStorage.setItem("recipes", JSON.stringify(allData));
+        setRecipes(allData);
 
 
         //e.log(allData);

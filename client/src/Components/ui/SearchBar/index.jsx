@@ -14,8 +14,8 @@ const SearchBar = ({ recipes }) => {
     const filtered = recipes.filter(
       (recipe) =>
         recipe.name.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.cuisine.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.ingredients.toLowerCase().includes(query.toLowerCase())
+        recipe.author.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.genre.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredUsers(filtered);
   };
@@ -44,7 +44,7 @@ const SearchBar = ({ recipes }) => {
   };
 
   const onClickSearch = (recipeId) => {
-    localStorage.setItem('recipe_id', recipeId);
+    localStorage.setItem('book_id', recipeId);
       navigate(`../Recipe`);
   };
 

@@ -3,7 +3,7 @@ import Button from "../Button";
 import axios from "axios";
 import "../../../styles/postmodal.css";
 
-const PostModal = ({ isOpen, onClose, books, setBooks }) => {
+const PostModal = ({ isOpen, onClose, recipes, setRecipes }) => {
   const token = localStorage.getItem("token");
   const user_id = localStorage.getItem("id");
   const [data, setData] = useState({
@@ -36,7 +36,7 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
     formData.append("review", data.review);
     formData.append("image", data.image);
     formData.append("token", token);
-    formData.append("userId", localStorage.getItem("id"));
+    formData.append("userId", user_id);
 
     try {
       console.log(formData.data)
@@ -44,9 +44,9 @@ const PostModal = ({ isOpen, onClose, books, setBooks }) => {
       const response = await axios.post("http://127.0.0.1:8000/books/post", formData);
 
       if (response.data.message === 'Post created successfully!') {
-        // const updatedBooks = [...books, response.data.data];
-        // localStorage.setItem("books", JSON.stringify(updatedBooks));
-        // setBooks(updatedBooks);
+        const updatedRecipes = [...recipes, response.data.data];
+        localStorage.setItem("books", JSON.stringify(updatedRecipes));
+        setRecipes(updatedRecipes);
         console.log('Posted')
       } else {
         console.log("Didn't Post");
