@@ -14,8 +14,8 @@ const SearchBar = ({ recipes }) => {
     const filtered = recipes.filter(
       (recipe) =>
         recipe.name.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.author.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.genre.toLowerCase().includes(query.toLowerCase())
+        recipe.author.toLowerCase().includes(query.toLowerCase())
+        // recipe.genre.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredUsers(filtered);
   };
@@ -73,7 +73,7 @@ const SearchBar = ({ recipes }) => {
                 <div className="search-list-li flex pointer">
                   <div className="photo width-20">
                     <Image
-                      src={`http://localhost:8000/${recipe.image_url}`}
+                      src={`http://localhost:8000/${recipe.photo}`}
                       alt={recipe.name}
                       className={'search-pic'}
                     />
