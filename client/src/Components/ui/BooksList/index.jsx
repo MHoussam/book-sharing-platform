@@ -3,7 +3,6 @@ import "../../../styles/books.css";
 import SearchBar from "../SearchBar";
 import RecipeCard from "../../base/RecipeCard";
 import axios from "axios";
-import RecipeCartModal from "../../base/CartRecipeModal";
 import PostModal from "../../base/PostModal";
 import Button from "../../base/Button";
 
@@ -64,14 +63,14 @@ const BooksList = () => {
         setLikedRecipes(JSON.parse(check));
         //console.log(likedRecipes);
       } else {
-        //// const response = await axios.post(
-        ////   "http:////127.0.0.1:8000/api/liked",
-        ////   data
-        //// );
-        //// const allData = response.data;
+         const response = await axios.post(
+          "http://127.0.0.1:8000/books/liked",
+           data
+        );
+        const allData = response.data;
 
-        //// localStorage.setItem("likes", JSON.stringify(allData));
-        //// setLikedRecipes(allData);
+        localStorage.setItem("likes", JSON.stringify(allData));
+        setLikedRecipes(allData);
 
 
         //console.log(allData);
@@ -124,7 +123,7 @@ const BooksList = () => {
   const handleLike = async (recipeId) => {
     try {
       const data = { token: token, recipeId: recipeId, userId: userId };
-      const response = await axios.post("http://127.0.0.1:8000/api/like", data);
+      const response = await axios.post("http://127.0.0.1:8000/books/like", data);
 
       if (response.data.message === "Liked") {
         const updatedLikedRecipes = [...likedRecipes, response.data.data];
@@ -258,12 +257,7 @@ const BooksList = () => {
               />
             </div>
           ))}
-          
-          <RecipeCartModal
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            shoppingList={shoppingList}
-          />
+        
 
           <PostModal
             isOpen={isPostModalOpen}

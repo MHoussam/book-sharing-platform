@@ -30,6 +30,11 @@ const RecipeCardModal = ({ recipe, likedRecipes = null, shoppingList = null, han
 
   return (
     <div className="recipe-card pointer" key={recipe.id} onClick={onClickCard}>
+      <div className="name flex center">
+        <p>Suggested by </p>
+        <h4> {recipe.user.first_name} {recipe.user.last_name}</h4>
+      </div>
+
       <Image
         src={`http://localhost:8000/${recipe.photo}`}
         alt={recipe.name}
