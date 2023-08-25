@@ -9,17 +9,16 @@ const SearchBar = ({ recipes, setFilteredRecipes }) => {
   const navigate = useNavigate();
 
   const handleSearch = (newQuery) => {
-    const trimmedQuery = newQuery.trim(); // Trim whitespace from the query
+    const trimmedQuery = newQuery.trim();
     if (trimmedQuery === "") {
-      setFilteredRecipes(recipes); // Display all recipes when query is empty
+      setFilteredRecipes(recipes);
     } else {
       const filteredRecipes = recipes.filter(
         (recipe) =>
           recipe.name.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
           recipe.author.toLowerCase().includes(trimmedQuery.toLowerCase())
-        // You can add more conditions if needed
       );
-      setFilteredRecipes(filteredRecipes); // Update filtered recipes
+      setFilteredRecipes(filteredRecipes);
     }
   };
 
@@ -27,7 +26,6 @@ const SearchBar = ({ recipes, setFilteredRecipes }) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
 
-    // Call handleSearch with the new query
     handleSearch(newQuery);
   };
 

@@ -60,6 +60,8 @@ const register = async (req, res) => {
 
     const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY);
 
+    console.log('tokent:', token);
+
     res.send({ token, user: savedUser });
   } catch (error) {
     console.error(error);

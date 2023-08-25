@@ -5,27 +5,32 @@ import Image from "../Image";
 import "../../../styles/recipecard.css";
 import Button from "../Button";
 
-const RecipeCardModal = ({ recipe, likedRecipes, shoppingList = null, handleLike = null, handleShoppingList = null }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  const navigate = useNavigate();
+const RecipeCardModal = ({ recipe, likedRecipes, handleLike, isFollowing, setIsFollowing }) => {
+  //const navigate = useNavigate();
   //console.log(likedRecipes.likedPostIds)
   
   const onClickLike = () => {
     handleLike();
   };
 
-  const onClickShopping = () => {
-    handleShoppingList();
-  };
 
-  const handleFollowToggle = () => {
-    setIsFollowing(!isFollowing);
-    // You can send a request to your server here to update the follow status.
+  const handleFollow = () => {
+    const isAlreadyFollowing = isFollowing.includes(recipe.user._id);
+    console.log(recipe.user.id)
+
+    if (isAlreadyFollowing) {
+      const updatedFollow = isFollowing.filter(follow => follow !== recipe.user.id);
+      setIsFollowing(updatedFollow);
+      localStorage.setItem('follow', JSON.stringify(updatedFollow));
+    } else {
+      const updatedFollow = [...isFollowing, recipe.user.id];
+      setIsFollowing(updatedFollow);
+      localStorage.setItem('follow', JSON.stringify(updatedFollow));
+    }
   };
 
   // console.log('recipe card')
-  // console.log(shoppingList)
+  console.log(isFollowing)
 
   return (
     <div className="recipe-card pointer" key={recipe._id} >
@@ -33,13 +38,11 @@ const RecipeCardModal = ({ recipe, likedRecipes, shoppingList = null, handleLike
         <p>Suggested by </p>
         <h4> {recipe.user.first_name} {recipe.user.last_name}</h4>
 
-        <button
-          className= 
-          {isFollowing ? "follow-btn pointer blue" : "follow-btn pointer"}
-          onClick={handleFollowToggle}
-        >
-         {isFollowing ? "Unfollow" : "Follow"}
-        </button>
+        <Button
+          className={isFollowing ? "follow-btn pointer blue" : "follow-btn pointer"}
+          onClick={handleFollow}
+          text={isFollowing ? "Unfollow" : "Follow"}
+        />
       </div>
 
       <Image
@@ -68,20 +71,6 @@ const RecipeCardModal = ({ recipe, likedRecipes, shoppingList = null, handleLike
           onClick={onClickLike}
         />
 
-        </div>
-
-        <div className="shopping">
-          <Button
-            text={"ShoppingList"}
-            className={
-              shoppingList.some(
-                (shoppingList) => shoppingList.recipe_id === recipe._id
-              )
-                ? "shopping-btn shopping-btn-active pointer bold round blue"
-                : "shopping-btn shopping-btn-inactive pointer bold round"
-            }
-            onClick={onClickShopping}
-          />
         </div>
       </div>
     </div>

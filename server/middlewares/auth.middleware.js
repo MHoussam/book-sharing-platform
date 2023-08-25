@@ -13,12 +13,12 @@ const authMiddleware = (req, res, next) => {
     console.log('1 decoded: ' + jwt.verify(token, process.env.SECRET_KEY))
     console.log('1 secret: ' + process.env.SECRET_KEY)
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    //const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
     console.log('token: ' + token)
     console.log('decoded: ' + decoded)
     console.log('secret: ' + process.env.SECRET_KEY)
-    req.user = decoded;
+    //req.user = decoded;
     next()
   } catch (error) {
     console.error('JWT Verification Error:', error);

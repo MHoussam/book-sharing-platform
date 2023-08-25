@@ -2,14 +2,16 @@ import axios from "axios";
 import "../../../styles/loginForm.css";
 import "../../../styles/utilities.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import logoPic from "../../../assets/images/logo.png";
 import Button from "../../base/Button";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
+    first_name: "",
+    last_name: "",
   });
 
   const handleDataChange = (e) => {
@@ -19,18 +21,14 @@ const LoginForm = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/login",
+        "http://localhost:8000/auth/register",
         data
       );
       console.log(response.data);
-      console.log(response.data.user._doc.first_name);
-      console.log(response.data.user._doc.last_name);
-      console.log(response.data.user._doc._id);
-      localStorage.setItem("id", response.data.user._doc._id);
-      setData({ email: "", password: "" });
+      localStorage.setItem("id", response.data.user._id);
+      setData({ email: "", password: "", first_name: "", last_name: "" });
 
       if (response.data.token !== null) {
-        localStorage.setItem("token", response.data.token);
         navigate("/Home");
       }
     } catch (e) {
@@ -38,8 +36,8 @@ const LoginForm = () => {
     }
   };
 
-  const handleRegister = () => {
-    navigate("/Register");
+  const handleLogin = () => {
+    navigate("/");
   };
 
   useEffect(() => {
@@ -47,7 +45,7 @@ const LoginForm = () => {
     localStorage.removeItem("recipes");
       localStorage.removeItem("likes");
   }, []);
-  
+
   const navigate = useNavigate();
 
   return (
@@ -55,9 +53,30 @@ const LoginForm = () => {
       <div className="login-card">
         <div className="login-header">
           <img src={logoPic} alt="Logo" className="logoPhoto" />
-          <h2>Welcome Back</h2>
         </div>
         <div className="login-form">
+          <div className="form-group">
+            <label htmlFor="first_name">First Name</label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              placeholder="First Name"
+              value={data.first_name}
+              onChange={handleDataChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_name">Last Name</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              placeholder="Last Name"
+              value={data.last_name}
+              onChange={handleDataChange}
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -80,12 +99,12 @@ const LoginForm = () => {
               onChange={handleDataChange}
             />
           </div>
-          <Button className="login-button" onClick={handleSubmit} text={'Login'} />
-          <div>Already have an account? <a className="pointer bold" onClick={handleRegister}>Register</a></div>
+          <Button className="register-button" onClick={handleSubmit} text={'Register'} />
+          <div>Already have an account? <a className="pointer bold" onClick={handleLogin}>Login</a></div>
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

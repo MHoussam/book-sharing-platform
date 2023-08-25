@@ -13,7 +13,9 @@ const NavBar = ({ setIsModalOpen }) => {
   const userId = localStorage.getItem('user_id');
 
   const handleLogout = () => {
-    // axios.get('http://127.0.0.1:8000/api/logout');
+    localStorage.removeItem("token");
+    localStorage.removeItem("recipes");
+      localStorage.removeItem("likes");
     navigate("/");
   };
 

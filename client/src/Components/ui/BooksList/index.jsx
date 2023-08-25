@@ -9,8 +9,8 @@ import Button from "../../base/Button";
 const BooksList = () => {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [isFollowing, setIsFollowing] = useState([]);
   const [likedRecipes, setLikedRecipes] = useState([]);
-  const [shoppingList, setShoppingList] = useState([]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeContent, setRecipeContent] = useState([
@@ -29,7 +29,7 @@ const BooksList = () => {
 
   const fetchRecipes = async () => {
     try {
-      const data = { token: token };
+      const data = { token: token, userId: userId };
       const check = localStorage.getItem("recipes");
 
       if (check) {
@@ -85,45 +85,6 @@ const BooksList = () => {
     }
   };
 
-  const fetchShoppingList = async () => {
-    try {
-      const data = { token: token, userId: userId };
-      const check = localStorage.getItem("shoppingList");
-      //console.log(check);
-      if (check) {
-        setShoppingList(JSON.parse(check));
-        //console.log("hhhhhello");
-      } else {
-        //// const response = await axios.post(
-        ////   "http:////127.0.0.1:8000/api/getShoppings",
-        ////   data
-        //// );
-        //// const allData = response.data;
-
-        //// localStorage.setItem("shoppingList", JSON.stringify(allData));
-        //// setShoppingList(allData);
-
-        //console.log(allData[0].recipe.cuisine);
-
-        // allData.map((item) => {
-        //   setRecipeContent((prev) => [
-        //     ...prev,
-        //     {
-        //       publisher_id: item.recipe.publisher_id,
-        //       name: item.recipe.name,
-        //       cuisine: item.recipe.cuisine,
-        //       ingredients: item.recipe.ingredients,
-        //       image_url: item.recipe.image_url
-        //     },
-        //   ]);
-        // });
-        //console.log("fffffetched");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   const handleLike = async (recipeId) => {
     try {
       const data = { token: token, postId: recipeId, userId: userId };
@@ -162,55 +123,6 @@ console.log(response.data.message)
     //console.log(likedRecipes);
   };
 
-  const handleShoppingList = async (recipeId) => {
-    try {
-      const data = { token: token, recipeId: recipeId, userId: userId };
-      //console.log(data);
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/shopping",
-        data
-      );
-
-      const allData = response.data;
-      //console.log(allData.data[0]);
-       if (allData.message === "Added") {
-
-        const updatedShoppingList = [...shoppingList, allData.data[0]];
-          // setRecipeContent((prev) => [...prev, updatedShoppingList]);
-
-        //   localStorage.setItem("shoppingList", JSON.stringify(allData));
-        // setShoppingList(allData);
-        // console.log(allData[0].recipe.cuisine);
-        // console.log(allData.data[0]);
-        // console.log(shoppingList);
-        localStorage.setItem("shoppingList", JSON.stringify([...shoppingList, allData.data[0]]));
-        setShoppingList([ ...shoppingList, allData.data[0] ]);
-      //   //console.log("add");       
-      } else {
-      //   //console.log(shoppingList);
-        const updatedShoppingList = shoppingList.filter(
-          (shoppingList) => shoppingList.recipe_id !== recipeId
-        );
-        localStorage.setItem("shoppingList", JSON.stringify(updatedShoppingList));
-        setShoppingList(updatedShoppingList);
-        //console.log("remove");
-      }
-      //console.log(response.data);
-      //console.log(shoppingList);
-    } catch (error) {
-      console.log("Error ShoppingList: " + error);
-    }
-    //console.log(shoppingList);
-  };
-
-  // const openModal = () => {
-  //   setIsModalOpen(true);
-  // };
-console.log("whattttttttttttttttttttttttt")
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   const openPostModal = () => {
     setIsPostModalOpen(true);
   };
@@ -220,14 +132,14 @@ console.log("whattttttttttttttttttttttttt")
   };
 
   useEffect(() => {
-    fetchLikes();
-    fetchRecipes();
-    fetchShoppingList();
+    if(token !== null){
+      fetchLikes();
+      fetchRecipes();
+    }
 
     const clearLocalStorageOnExit = (e) => {
       localStorage.removeItem("recipes");
       localStorage.removeItem("likes");
-      localStorage.removeItem("shoppingList");
     };
 
     window.addEventListener("beforeunload", clearLocalStorageOnExit);
@@ -237,13 +149,6 @@ console.log("whattttttttttttttttttttttttt")
     };
   }, []);
 
-  //console.log(shoppingList);
-
-  //console.log(likedRecipes);
-  //console.log(recipes);
-
-  //console.log("here");
-  //console.log(shoppingList);
   return (
     <div className="content">
       <div className="search-post flex">
@@ -265,9 +170,9 @@ console.log("whattttttttttttttttttttttttt")
               <RecipeCard
                 recipe={recipe}
                 likedRecipes={likedRecipes}
-                shoppingList={shoppingList}
                 handleLike={() => handleLike(recipe._id)}
-                handleShoppingList={() => handleShoppingList(recipe._id)}
+                isFollowing={isFollowing}
+                setIsFollowing={setIsFollowing}
               />
             </div>
           ))}
