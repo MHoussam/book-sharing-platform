@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-//import axios from "axios";
+import axios from "axios";
 import Image from "../Image";
 import "../../../styles/recipecard.css";
 import Button from "../Button";
 
 const RecipeCardModal = ({ recipe, likedRecipes, handleLike, isFollowing, setIsFollowing }) => {
+  
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
   //const navigate = useNavigate();
   //console.log(likedRecipes.likedPostIds)
   
@@ -13,24 +16,40 @@ const RecipeCardModal = ({ recipe, likedRecipes, handleLike, isFollowing, setIsF
     handleLike();
   };
 
-
-  const handleFollow = () => {
-    const isAlreadyFollowing = isFollowing.includes(recipe.user._id);
-    console.log(recipe.user.id)
-
-    if (isAlreadyFollowing) {
-      const updatedFollow = isFollowing.filter(follow => follow !== recipe.user.id);
-      setIsFollowing(updatedFollow);
-      localStorage.setItem('follow', JSON.stringify(updatedFollow));
-    } else {
-      const updatedFollow = [...isFollowing, recipe.user.id];
-      setIsFollowing(updatedFollow);
-      localStorage.setItem('follow', JSON.stringify(updatedFollow));
+const handleFollow = async () => {
+  try {
+    const data = { token: token, followerId: userId, followeeId: recipe.user.id};
+    const isAlreadyFollowing = isFollowing.includes(recipe.user.id);
+    const response = await axios.post(
+      `http://localhost:8000/users/follow`,
+      data
+    );
+console.log(isAlreadyFollowing)
+    if (isAlreadyFollowing) {      
+      if (response.status === 200) {
+        const updatedFollow = isFollowing.filter((follow) => follow !== recipe.user._id);
+        setIsFollowing(updatedFollow);
+        console.log(isFollowing)
+        console.log(updatedFollow)
+        localStorage.setItem('follow', JSON.stringify(updatedFollow));
+      } else {
+        console.error("Failed to unfollow user");
+      }
+    } else {      
+      if (response.status === 200) {
+        const updatedFollow = [...isFollowing, recipe.user.id];
+        console.log(recipe.user.id)
+        console.log(updatedFollow)
+        setIsFollowing(updatedFollow);
+        localStorage.setItem('follow', JSON.stringify(updatedFollow));
+      } else {
+        console.error("Failed to follow user");
+      }
     }
-  };
-
-  // console.log('recipe card')
-  console.log(isFollowing)
+  } catch (error) {
+    console.error("Error following/unfollowing user:", error);
+  }
+};
 
   return (
     <div className="recipe-card pointer" key={recipe._id} >

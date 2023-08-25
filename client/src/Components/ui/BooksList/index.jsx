@@ -26,10 +26,11 @@ const BooksList = () => {
   //const [like, setLike] = useState("Like");
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const follow = localStorage.getItem("follow");
 
   const fetchRecipes = async () => {
     try {
-      const data = { token: token, userId: userId };
+      const data = { token: token, follow: [follow] };
       const check = localStorage.getItem("recipes");
 
       if (check) {
@@ -75,10 +76,32 @@ const BooksList = () => {
         console.log(response.data)
         localStorage.setItem("likes", JSON.stringify(allData));
         setLikedRecipes(allData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
+  const fetchFollow = async () => {
+    try {
+      const data = { token: token, userId: userId };
+      const check = localStorage.getItem("follow");
 
-        //console.log(allData);
-        //console.log("fffffetched");
+      if (check) {
+        setIsFollowing(JSON.parse(check));
+        //console.log("hellooooo");
+      } else {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/users/following",
+           data
+        );
+        const allData = response.data;
+
+        localStorage.setItem("follow", JSON.stringify(allData));
+        setIsFollowing(allData);
+
+        //e.log(allData);
+        console.log("fetched");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -88,10 +111,7 @@ const BooksList = () => {
   const handleLike = async (recipeId) => {
     try {
       const data = { token: token, postId: recipeId, userId: userId };
-      console.log(data)
       const response = await axios.post("http://127.0.0.1:8000/books/like", data);
-console.log(response.data.updatedPost._id)
-console.log(response.data.message)
       if (response.data.message === "Liked") {
         const updatedLikedRecipes = {
           ...likedRecipes,
@@ -135,11 +155,13 @@ console.log(response.data.message)
     if(token !== null){
       fetchLikes();
       fetchRecipes();
+      fetchFollow();
     }
 
     const clearLocalStorageOnExit = (e) => {
       localStorage.removeItem("recipes");
       localStorage.removeItem("likes");
+      localStorage.removeItem("follow");
     };
 
     window.addEventListener("beforeunload", clearLocalStorageOnExit);

@@ -14,27 +14,31 @@ const getUser = async (req,res) => {
 }
 
 const followUser = async (req, res) => {
-    const { followerId, followeeId } = req.params;
-  
-    try {
-      const follower = await User.findById(followerId);
-      const followee = await User.findById(followeeId);
-  
-      if (follower.following.includes(followeeId)) {
-        return res.status(400).json({ message: "Already following this user." });
-      }
-  
+  const { followerId: followerId, followeeId: followeeId } = req.body;
+
+  try {
+    const follower = await User.findById(followerId);
+    const followee = await User.findById(followeeId);    
+
+    const isFollowing = follower.following.includes(followeeId);
+
+    if (isFollowing) {
+      const updatedFollowing = follower.following.filter((id) => id.toString() !== followeeId.toString());
+      follower.following = updatedFollowing;
+      console.log('sssss')
+    } else {
       follower.following.push(followeeId);
-  
-      await follower.save();
-      await followee.save();
-  
-      res.status(200).json({ message: "User followed successfully." });
-    } catch (error) {
-      console.error("Error following user:", error);
-      res.status(500).json({ message: "Internal server error." });
     }
-  };
+
+    await follower.save();
+
+    res.status(200).json({ message: isFollowing ? "Unfollowe" : "Followed" });
+  } catch (error) {
+    console.error("Error following/unfollowing user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 
 module.exports = {
     followUser,

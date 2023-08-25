@@ -48,10 +48,10 @@ const createPost = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const { userId: userId} = req.body;
+  const { follow} = req.body;
 
   try {
-    const books = await Post.find({ user_id: { $ne: userId } });
+    const books = await Post.find({ user_id: { $ne: follow } });
     res.send(books);
   } catch (error) {
     res.status(500).send({ error: "Error retrieving posts." });
