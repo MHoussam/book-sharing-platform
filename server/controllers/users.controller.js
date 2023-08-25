@@ -13,57 +13,31 @@ const getUser = async (req,res) => {
     res.send(user)
 }
 
-const createUser = async (req,res) => {
-    const { password, first_name, last_name, email } = req.body
-
-    if (!password || !first_name || !last_name || !email) {
-        console.log('password: ' + password + '    first: ' + first_name + '    last: ' + last_name + '    email: ' + email)
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-    
+const followUser = async (req, res) => {
+    const { followerId, followeeId } = req.params;
+  
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        console.log('pass: ' + hashedPassword)
-        const user = new User({
-            email,
-            password: hashedPassword,
-            first_name,
-            last_name
-        })
-        await user.save();
-
-        res.status(201).json({
-            message: 'User created successfully!',
-            user: user
-        });
+      const follower = await User.findById(followerId);
+      const followee = await User.findById(followeeId);
+  
+      if (follower.following.includes(followeeId)) {
+        return res.status(400).json({ message: "Already following this user." });
+      }
+  
+      follower.following.push(followeeId);
+  
+      await follower.save();
+      await followee.save();
+  
+      res.status(200).json({ message: "User followed successfully." });
     } catch (error) {
-      res.status(500).json({ message: 'An error occurred while creating the user.' });
+      console.error("Error following user:", error);
+      res.status(500).json({ message: "Internal server error." });
     }
-}
-
-const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const { first_name, last_name } = req.body;
-  
-    if (last_name !== "") dataToUpade.last_name = last_name
-    const user = await User.findByIdAndUpdate(id, {
-      $set: { first_name, last_name },
-  
-    }, {
-      new: true
-    })
-  
-    res.send(user)
-  }
-
-const deleteUser = (req,res) => {
-    res.send("delete users")
-}
+  };
 
 module.exports = {
+    followUser,
     getAllUsers,
     getUser,
-    createUser,
-    updateUser,
-    deleteUser
 }
