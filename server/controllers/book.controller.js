@@ -71,22 +71,30 @@ const getLikedPosts = async (req,res) => {
 
 const likePost = async (req, res) => {
   try {
-    const updatedPost = await Post.findOneAndUpdate(
-      { _id: postId },
-      { $addToSet: { 'like.id': userId } },
-      { new: true }
-    );
+    const { postId, userId } = req.body;
 
-    if (!updatedPost) {
+    const post = await Post.findById(postId);
+
+    if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    res.status(200).json({ message: 'Post liked successfully', updatedPost });
+    const isLiked = post.like.find((like) => like.id.equals(userId));
+
+    if (isLiked) {
+      post.like = post.like.filter((like) => !like.id.equals(userId));
+    } else {
+      post.like.push({ id: userId });
+    }
+
+    const updatedPost = await post.save();
+
+    res.status(200).json({ message: isLiked ? 'Unliked' : 'Liked', updatedPost });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error liking the post' });
+    res.status(500).json({ message: 'Error liking/unliking the post' });
   }
-}
+};
 
 module.exports = {
   likePost,

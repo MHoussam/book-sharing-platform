@@ -4,57 +4,58 @@ import "../../../styles/searchbar.css";
 import Image from "../../base/Image";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar = ({ recipes }) => {
-  const [query, setQuery] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [showList, setShowList] = useState(false);
+const SearchBar = ({ recipes, setFilteredRecipes }) => {
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (query) => {
-    const filtered = recipes.filter(
-      (recipe) =>
-        recipe.name.toLowerCase().includes(query.toLowerCase()) ||
-        recipe.author.toLowerCase().includes(query.toLowerCase())
-        // recipe.genre.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredUsers(filtered);
-  };
-
-  const handleClickOutside = (e) => {
-    if (!e.target.closest(".search-bar-input")) {
-      setShowList(false);
+  const handleSearch = (newQuery) => {
+    const trimmedQuery = newQuery.trim(); // Trim whitespace from the query
+    if (trimmedQuery === "") {
+      setFilteredRecipes(recipes); // Display all recipes when query is empty
+    } else {
+      const filteredRecipes = recipes.filter(
+        (recipe) =>
+          recipe.name.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
+          recipe.author.toLowerCase().includes(trimmedQuery.toLowerCase())
+        // You can add more conditions if needed
+      );
+      setFilteredRecipes(filteredRecipes); // Update filtered recipes
     }
   };
 
   const handleInputChange = (e) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
+
+    // Call handleSearch with the new query
     handleSearch(newQuery);
-    setShowList(newQuery);
-
-    if (newQuery === "") {
-      setFilteredUsers([]);
-    }
-  };
-
-  const handleInputClick = () => {
-    if (filteredUsers.length > 0) {
-      setShowList(true);
-    }
   };
 
   const onClickSearch = (recipeId) => {
-    localStorage.setItem('book_id', recipeId);
-      navigate(`../Book`);
+    localStorage.setItem("book_id", recipeId);
+    navigate(`../Book`);
   };
 
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   // Cleanup function to remove event listener
+  //   // const handleClickOutside = (e) => {
+  //   //   if (!e.target.closest(".search-bar-input")) {
+  //   //     // Clear the query and reset the recipes to the original list
+  //   //     setQuery("");
+  //   //     setRecipes(recipes);
+  //   //   }
+  //   // };
 
+  //   // Add click event listener to handle clicks outside the input
+  //   //document.addEventListener("click", handleClickOutside);
+
+  //   // Remove the event listener when the component unmounts
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [recipes, setRecipes]);
+
+  console.log(recipes)
   return (
     <div className="search-bar flex column center">
       <input
@@ -63,28 +64,7 @@ const SearchBar = ({ recipes }) => {
         className="search-bar-input width-30"
         value={query}
         onChange={handleInputChange}
-        onClick={handleInputClick}
       />
-      {showList && (
-        <div className="search-bar-list width-100 flex column center">
-          <ul className="search-list flex column">
-            {filteredUsers.map((recipe) => (
-              <li key={recipe._id} onClick={() => onClickSearch(recipe._id)}>
-                <div className="search-list-li flex pointer">
-                  <div className="photo width-20">
-                    <Image
-                      src={`http://localhost:8000/${recipe.photo}`}
-                      alt={recipe.name}
-                      className={'search-pic'}
-                    />
-                  </div>
-                  <div>{recipe.name}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };

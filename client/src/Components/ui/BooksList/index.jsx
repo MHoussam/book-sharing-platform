@@ -8,6 +8,7 @@ import Button from "../../base/Button";
 
 const BooksList = () => {
   const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [likedRecipes, setLikedRecipes] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -33,6 +34,7 @@ const BooksList = () => {
 
       if (check) {
         setRecipes(JSON.parse(check));
+        setFilteredRecipes(JSON.parse(check));
         //console.log("hellooooo");
       } else {
         const response = await axios.post(
@@ -44,7 +46,7 @@ const BooksList = () => {
 
         localStorage.setItem("recipes", JSON.stringify(allData));
         setRecipes(allData);
-
+        setFilteredRecipes(allData);
 
         //e.log(allData);
         console.log("fetched");
@@ -61,6 +63,8 @@ const BooksList = () => {
       //console.log(check);
       if (check) {
         setLikedRecipes(JSON.parse(check));
+        console.log('try')
+        console.log(likedRecipes)
         //console.log(likedRecipes);
       } else {
          const response = await axios.post(
@@ -68,7 +72,7 @@ const BooksList = () => {
            data
         );
         const allData = response.data;
-
+        console.log(response.data)
         localStorage.setItem("likes", JSON.stringify(allData));
         setLikedRecipes(allData);
 
@@ -122,22 +126,32 @@ const BooksList = () => {
 
   const handleLike = async (recipeId) => {
     try {
-      const data = { token: token, recipeId: recipeId, userId: userId };
+      const data = { token: token, postId: recipeId, userId: userId };
+      console.log(data)
       const response = await axios.post("http://127.0.0.1:8000/books/like", data);
-
+console.log(response.data.updatedPost._id)
+console.log(response.data.message)
       if (response.data.message === "Liked") {
-        const updatedLikedRecipes = [...likedRecipes, response.data.data];
-        //console.log(likedRecipes);
+        const updatedLikedRecipes = {
+          ...likedRecipes,
+          likedPostIds: [...likedRecipes.likedPostIds, response.data.updatedPost._id],
+        };
+      setLikedRecipes(updatedLikedRecipes);
+        console.log(likedRecipes);
         localStorage.setItem("likes", JSON.stringify(updatedLikedRecipes));
-        setLikedRecipes(updatedLikedRecipes);
-        //console.log("add");
+        //setLikedRecipes(updatedLikedRecipes);
+        console.log("add");
       } else {
-        //console.log(likedRecipes);
-        const updatedLikedRecipes = likedRecipes.filter(
-          (likedRecipe) => likedRecipe.recipe_id !== recipeId
-        );
-        localStorage.setItem("likes", JSON.stringify(updatedLikedRecipes));
+        console.log('hereeeeeeee');
+        console.log(likedRecipes);
+        const updatedLikedRecipes = {
+          ...likedRecipes,
+          likedPostIds: likedRecipes.likedPostIds.filter(
+            (likedPostId) => likedPostId !== response.data.updatedPost._id
+          ),
+        };
         setLikedRecipes(updatedLikedRecipes);
+        localStorage.setItem("likes", JSON.stringify(updatedLikedRecipes));
         //console.log("remove");
       }
       //console.log(response.data);
@@ -192,7 +206,7 @@ const BooksList = () => {
   // const openModal = () => {
   //   setIsModalOpen(true);
   // };
-
+console.log("whattttttttttttttttttttttttt")
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -234,7 +248,7 @@ const BooksList = () => {
     <div className="content">
       <div className="search-post flex">
         <div className="search flex center width-90">
-          <SearchBar recipes={recipes} />
+          <SearchBar recipes={recipes} setFilteredRecipes={setFilteredRecipes} />
         </div>
 
         <div className="post width-10 flex center">
@@ -246,8 +260,8 @@ const BooksList = () => {
 
       <div className="recipes">
         <div className="recipe-container">
-          {recipes.map((recipe) => (
-            <div key={recipe._id}>
+        {filteredRecipes.map((recipe) => (
+          <div key={recipe._id}>
               <RecipeCard
                 recipe={recipe}
                 likedRecipes={likedRecipes}
